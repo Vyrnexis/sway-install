@@ -22,6 +22,7 @@ gammastep
 power-profiles-daemon
 networkmanager
 network-manager-applet
+libappindicator-gtk3
 bluez
 bluez-utils
 blueman

@@ -31,7 +31,7 @@ After installation finishes and you reboot, sign in as the regular sudo-capable 
 
    ```bash
    cd sway-install
-   ./sway_install_script.sh
+   ./niri_install.sh
    ```
 
 The installer must not be run as root; it prompts for your sudo password whenever elevated privileges are required and asks for confirmation before proceeding.

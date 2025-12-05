@@ -84,11 +84,12 @@ layout {
 }
 
 // Startup programs.
+spawn-at-startup "dbus-update-activation-environment --systemd --all"
 spawn-at-startup "waybar"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "mako"
 spawn-at-startup "blueman-applet"
-spawn-at-startup "nm-applet --indicator"
+spawn-sh-at-startup "sleep 2 && nm-applet --indicator"
 spawn-at-startup "~/.config/waybar/scripts/idle_toggle.sh enable"
 
 hotkey-overlay {
