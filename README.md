@@ -24,13 +24,13 @@ After installation finishes and you reboot, sign in as the regular sudo-capable 
    ```bash
    sudo pacman -S --needed git
    cd ~
-   git clone https://github.com/DrunkenAlcoholic/sway-install.git
+   git clone https://github.com/Vyrnexis/Niri-install.git
    ```
 
 2. Run the installer from inside the cloned directory:
 
    ```bash
-   cd sway-install
+   cd Niri-install
    ./niri_install.sh
    ```
 
@@ -50,9 +50,9 @@ The installer must not be run as root; it prompts for your sudo password wheneve
 ## Post-Install Notes
 
 - Reboot after the script completes so greetd and the configured services start cleanly.
-- When Niri starts, custom bindings add `Super+Enter` (Kitty terminal), `Super+D` (NimLaunch), `Super+B` (Brave browser), `Super+N` (Thunar file manager), `Super+Shift+I` (keybinding helper), `Super+Q` (close window), and `Super+Shift+E` (exit session). Niri defaults remain for navigation and layout.
+- When Niri starts, custom bindings add `Super+Enter` (Kitty terminal), `Super+D` (NimLaunch), `Super+B` (Brave browser), `Super+N` (Thunar file manager), and `Mod+Shift+/` (Niri’s built-in keybinding overlay). Niri defaults remain for navigation and layout.
 - Cursor theming: the script installs Bibata and writes `~/.icons/default/index.theme` so the cursor is consistent across GTK, Qt, and Wayland applications.
-- The keybinding helper shows a GUI if `yad` is available (installed by default); it falls back to a terminal view otherwise.
+- Niri’s built-in keybinding overlay (`Mod+Shift+/`) is available without extra tooling.
 
 ## Troubleshooting
 

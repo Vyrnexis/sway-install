@@ -13,8 +13,6 @@ zathura
 zathura-pdf-mupdf
 man-db
 man-pages
-iwd
-wireless_tools
 wpa_supplicant
 lm_sensors
 smartmontools

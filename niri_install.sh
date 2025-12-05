@@ -236,7 +236,7 @@ apply_theme() {
 write_theme_env() {
   local env_dir="$HOME/.config/environment.d"
   mkdir -p "$env_dir"
-  local env_pairs=(
+  local env_vars=(
     "GTK_THEME=Dracula"
     "XCURSOR_THEME=Bibata-Modern-Ice"
     "XCURSOR_SIZE=24"
@@ -250,40 +250,24 @@ write_theme_env() {
     "CLUTTER_BACKEND=wayland"
     "MOZ_ENABLE_WAYLAND=1"
   )
-  local env_names=(
-    GTK_THEME
-    XCURSOR_THEME
-    XCURSOR_SIZE
-    QT_QPA_PLATFORMTHEME
-    GTK_USE_PORTAL
-    XDG_CURRENT_DESKTOP
-    XDG_SESSION_DESKTOP
-    XDG_SESSION_TYPE
-    QT_QPA_PLATFORM
-    SDL_VIDEODRIVER
-    CLUTTER_BACKEND
-    MOZ_ENABLE_WAYLAND
-  )
-cat > "$env_dir/10-dracula.conf" <<'EOF'
-GTK_THEME=Dracula
-XCURSOR_THEME=Bibata-Modern-Ice
-XCURSOR_SIZE=24
-QT_QPA_PLATFORMTHEME=gtk3
-GTK_USE_PORTAL=1
-XDG_CURRENT_DESKTOP=niri
-XDG_SESSION_DESKTOP=niri
-XDG_SESSION_TYPE=wayland
-QT_QPA_PLATFORM=wayland
-SDL_VIDEODRIVER=wayland
-CLUTTER_BACKEND=wayland
-MOZ_ENABLE_WAYLAND=1
-EOF
 
-  command -v systemctl >/dev/null 2>&1 && \
+  printf '%s\n' "${env_vars[@]}" > "$env_dir/10-dracula.conf"
+
+  local env_names=()
+  local pair name
+  for pair in "${env_vars[@]}"; do
+    name="${pair%%=*}"
+    env_names+=("$name")
+    export "$pair"
+  done
+
+  if command -v systemctl >/dev/null 2>&1; then
     systemctl --user import-environment "${env_names[@]}" >/dev/null 2>&1 || true
+  fi
 
-  command -v dbus-update-activation-environment >/dev/null 2>&1 && \
-    dbus-update-activation-environment "${env_pairs[@]}" >/dev/null 2>&1 || true
+  if command -v dbus-update-activation-environment >/dev/null 2>&1; then
+    dbus-update-activation-environment "${env_vars[@]}" >/dev/null 2>&1 || true
+  fi
 }
 
 # --- display manager ------------------------------------------------------
@@ -487,7 +471,7 @@ EOF
   • Super + D: NimLaunch application launcher
   • Super + B: Open Brave browser
   • Super + N: Open Thunar file manager
-  • Super + Shift + I: Show keybinding helper
+  • Mod + Shift + /: Show Niri keybinding overlay
   • Super + I: Lock screen
   • Super + Q: Close window
   • Super + Shift + E: Exit Niri session
@@ -520,8 +504,8 @@ main() {
 
   sync_configs
   install_desktop_entries
-  log_info "Creating ~/Screenshots"
-  mkdir -p "$HOME/Screenshots"
+  log_info "Creating ~/Pictures/Screenshots"
+  mkdir -p "$HOME/Pictures/Screenshots"
 
   configure_greetd
   enable_services

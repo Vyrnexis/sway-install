@@ -35,13 +35,13 @@ gvfs-afc
 libnotify
 polkit
 polkit-gnome
-yad
 gtk3
 qt5ct
 qt6-wayland
 lxappearance
 xdg-user-dirs
 xdg-utils
+xdg-desktop-portal
 xdg-desktop-portal-wlr
 xdg-desktop-portal-gtk
 gvfs-smb

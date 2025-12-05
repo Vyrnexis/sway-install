@@ -7,5 +7,6 @@ openssh
 unzip
 rsync
 fontconfig
+desktop-file-utils
 zsh
 zsh-autosuggestions
