@@ -1,24 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-LOCK_CMD="gtklock -s"
+LOCK_CMD=(gtklock)
 if ! command -v gtklock >/dev/null 2>&1; then
     if command -v loginctl >/dev/null 2>&1; then
-        LOCK_CMD="loginctl lock-session"
+        LOCK_CMD=(loginctl lock-session)
     else
         echo "gtklock not found and no loginctl fallback available" >&2
         exit 1
     fi
+elif [[ -f /usr/share/gtklock/style.css ]]; then
+    LOCK_CMD=(gtklock -s /usr/share/gtklock/style.css)
 fi
 
 LOCK_TIMEOUT=300
 DPMS_TIMEOUT=360
 
 IDLE_CMD=(swayidle -w \
-    timeout "$LOCK_TIMEOUT" "$LOCK_CMD" \
+    timeout "$LOCK_TIMEOUT" "${LOCK_CMD[@]}" \
     timeout "$DPMS_TIMEOUT" "niri msg action power-off-monitors" \
     resume "niri msg action power-on-monitors" \
-    before-sleep "$LOCK_CMD")
+    before-sleep "${LOCK_CMD[@]}")
 
 command -v swayidle >/dev/null 2>&1 || { echo "swayidle not found" >&2; exit 1; }
 

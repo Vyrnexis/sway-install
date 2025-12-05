@@ -14,11 +14,12 @@ weather_location="${WEATHER_LOCATION:-Perth}"
 weather_unit="${WEATHER_UNIT:-?m}"
 
 BASE_URL="https://wttr.in/${weather_location}"
-STATUS_URL="${BASE_URL}?format=%c%t&${weather_unit#?}"
-FULL_URL="${BASE_URL}?${weather_unit#?}&format=3"
+unit="${weather_unit#?}"
+STATUS_URL="${BASE_URL}?format=%c%t&${unit}"
+FULL_URL="${BASE_URL}?${unit}&format=3"
 
 weather_status(){
-    curl -fsS --max-time 10 "$STATUS_URL" | tr -d '\n' || printf "Weather unavailable"
+    curl -fsS --http1.1 --max-time 10 "$STATUS_URL" | tr -d '\n' || printf "Weather unavailable"
 }
 
 print_weather(){
@@ -26,7 +27,7 @@ print_weather(){
     tmp="$(mktemp)"
     trap 'rm -f "$tmp"' EXIT
 
-    if curl -fsS --max-time 10 "$FULL_URL" -o "$tmp"; then
+    if curl -fsS --http1.1 --max-time 10 "$FULL_URL" -o "$tmp"; then
         ${PAGER:-less} -R "$tmp"
     else
         echo "Cannot reach wttr.in right now."
