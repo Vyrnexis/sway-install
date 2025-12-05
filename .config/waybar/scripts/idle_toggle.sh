@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SWAYIDLE_CMD=(swayidle -w \
-    timeout 300 "swaylock -f" \
-    timeout 600 "swaymsg \"output * dpms off\"" \
-    resume "swaymsg \"output * dpms on\"" \
-    before-sleep "swaylock -f")
+IDLE_CMD=(swayidle -w \
+    timeout 300 "gtklock -s" \
+    before-sleep "gtklock -s")
+
+command -v swayidle >/dev/null 2>&1 || { echo "swayidle not found" >&2; exit 1; }
+command -v gtklock >/dev/null 2>&1 || { echo "gtklock not found" >&2; exit 1; }
 
 is_running() {
     pgrep -x swayidle >/dev/null 2>&1
@@ -13,7 +14,7 @@ is_running() {
 
 start_idle() {
     if ! is_running; then
-        setsid -f "${SWAYIDLE_CMD[@]}" >/dev/null 2>&1
+        setsid -f "${IDLE_CMD[@]}" >/dev/null 2>&1
     fi
 }
 

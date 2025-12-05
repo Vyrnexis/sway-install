@@ -1,0 +1,46 @@
+# Niri configuration with Dracula theming and custom launch bindings
+
+font { family "JetBrainsMono Nerd Font" size 11.0 }
+
+cursor { theme "Bibata-Modern-Ice" size 24 }
+
+environment {
+  variables {
+    "GTK_THEME" "Dracula"
+    "XCURSOR_THEME" "Bibata-Modern-Ice"
+    "XCURSOR_SIZE" "24"
+  }
+}
+
+layout {
+  gaps { inner 4 outer 6 }
+}
+
+spawn-at-startup [
+  "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XCURSOR_THEME XCURSOR_SIZE QT_QPA_PLATFORMTHEME GTK_USE_PORTAL"
+  "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+  "mako"
+  "nm-applet --indicator"
+  "blueman-applet"
+  "waybar"
+  "~/.config/waybar/scripts/idle_toggle.sh enable"
+]
+
+binds {
+  Mod+Return { spawn "kitty" }
+  Mod+D { spawn "~/.local/bin/nimlaunch" }
+  Mod+B { spawn "brave" }
+  Mod+N { spawn "thunar" }
+  Mod+I { spawn "gtklock -s" }
+  Mod+Shift+I { spawn "~/.config/waybar/scripts/keyhint.sh" }
+  Print { spawn "grim - | swappy -f -" }
+  Mod+Print { spawn "grim -g \"$(slurp)\" - | swappy -f -" }
+  XF86AudioRaiseVolume { spawn "~/.config/waybar/scripts/volume --up" }
+  XF86AudioLowerVolume { spawn "~/.config/waybar/scripts/volume --down" }
+  XF86AudioMute { spawn "~/.config/waybar/scripts/volume --toggle" }
+  XF86AudioMicMute { spawn "pactl set-source-mute @DEFAULT_SOURCE@ toggle" }
+  XF86MonBrightnessUp { spawn "brightnessctl set +5%" }
+  XF86MonBrightnessDown { spawn "brightnessctl set 5%-" }
+  Mod+Q { close-window }
+  Mod+Shift+E { quit }
+}

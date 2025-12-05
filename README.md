@@ -1,8 +1,8 @@
-# Sway Install Script
+# Niri Install Script
 
-![Dracula-themed Sway desktop](Screenshot.png)
+![Dracula-themed Niri desktop](Screenshot.png)
 
-This repository contains an automated installer that sets up a Dracula-themed Sway desktop environment on a freshly installed Arch Linux system. It installs core Wayland tooling, productivity utilities, fonts, and quality-of-life tweaks so you can log in and start working immediately.
+This repository contains an automated installer that sets up a Dracula-themed Niri desktop environment on a freshly installed Arch Linux system. It installs core Wayland tooling, productivity utilities, fonts, and quality-of-life tweaks so you can log in and start working immediately.
 
 ## Prerequisites
 
@@ -38,19 +38,19 @@ The installer must not be run as root; it prompts for your sudo password wheneve
 
 ## What the Script Installs
 
-- Sway window manager, Waybar panel, swaylock/swayidle, and supporting Wayland tools
+- Niri compositor, Waybar panel, gtklock/swayidle, and supporting Wayland tools
 - Kitty terminal, Thunar file manager, notification daemon (mako), screenshot utilities (grim, slurp, swappy)
 - PipeWire audio stack with WirePlumber session manager
 - Paru AUR helper plus AUR packages such as Brave browser, Dracula GTK/icons, NimLaunch, and Nymph
 - Dracula GTK theme, Dracula icons, Bibata cursor theme, Nerd Fonts, and environment configuration for GTK/Qt apps
-- System services: NetworkManager, Bluetooth, user-level PipeWire services (when available)
+- System services: NetworkManager, Bluetooth, seatd, greetd + tuigreet, user-level PipeWire services (when available)
 - Custom configuration files placed under `~/.config/`
 - Zsh installed and set as the default shell (with bash config still installed and backed up)
 
 ## Post-Install Notes
 
-- Reboot after the script completes so SDDM and the configured services start cleanly.
-- When Sway starts, basic key bindings include `Super+Enter` (Kitty terminal), `Super+D` (NimLaunch), `Super+B` (Brave browser), `Super+N` (Thunar file manager), `Super+Shift+I` (keybinding helper), `Super+Shift+Q` (close window), and `Super+Shift+E` (exit Sway).
+- Reboot after the script completes so greetd and the configured services start cleanly.
+- When Niri starts, custom bindings add `Super+Enter` (Kitty terminal), `Super+D` (NimLaunch), `Super+B` (Brave browser), `Super+N` (Thunar file manager), `Super+Shift+I` (keybinding helper), `Super+Q` (close window), and `Super+Shift+E` (exit session). Niri defaults remain for navigation and layout.
 - Cursor theming: the script installs Bibata and writes `~/.icons/default/index.theme` so the cursor is consistent across GTK, Qt, and Wayland applications.
 - The keybinding helper shows a GUI if `yad` is available (installed by default); it falls back to a terminal view otherwise.
 

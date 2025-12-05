@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Automated Sway desktop bootstrapper for minimal Arch installs.
+# Automated Niri desktop bootstrapper for minimal Arch installs.
 # Lays down required packages, theming, and user configuration.
 
 set -euo pipefail
@@ -45,12 +45,11 @@ show_banner() {
     printf '\033c'
   fi
   local -r banner="$(cat <<'EOF'
-███████╗██╗    ██╗ █████╗ ██╗   ██╗     ██╗███╗   ██╗███████╗████████╗ █████╗ ██╗     ██╗
-██╔════╝██║    ██║██╔══██╗╚██╗ ██╔╝     ██║████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██║     ██║
-███████╗██║ █╗ ██║███████║ ╚████╔╝█████╗██║██╔██╗ ██║███████╗   ██║   ███████║██║     ██║
-╚════██║██║███╗██║██╔══██║  ╚██╔╝ ╚════╝██║██║╚██╗██║╚════██║   ██║   ██╔══██║██║     ██║
-███████║╚███╔███╔╝██║  ██║   ██║        ██║██║ ╚████║███████║   ██║   ██║  ██║███████╗███████╗
-╚══════╝ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝        ╚═╝╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
+ _   _ _     _ 
+| \ | (_)___| |_ ___
+|  \| | / __| __/ _ \\
+| |\\  | \__ \\ || (_) |
+|_| \_|_|___/\\__\\___/
 EOF
 )"
   printf '%b%s%b\n' "${PURPLE}" "$banner" "${NC}"
@@ -70,12 +69,16 @@ require_environment() {
 
 confirm_run() {
   if [[ ! -t 0 ]]; then
-    log_warn "No interactive terminal detected; proceeding without prompt."
-    return
+    if [[ ${ASSUME_YES:-0} == 1 ]]; then
+      log_warn "Non-interactive session with ASSUME_YES=1; continuing without prompt."
+      return
+    fi
+    log_err "Non-interactive session. Re-run with ASSUME_YES=1 to allow upgrades."
+    exit 1
   fi
 
   while true; do
-    read -r -p "Proceed with Sway installation? [Y/n]: " reply || {
+    read -r -p "Proceed with Niri installation? [Y/n]: " reply || {
       log_warn "No input received; aborting."
       exit 0
     }
@@ -152,7 +155,7 @@ install_paru() {
 
   local tmpdir
   tmpdir="$(mktemp -d)"
-  trap 'rm -rf "$tmpdir"' RETURN
+  trap 'rm -rf "$tmpdir"; trap - RETURN' RETURN
   log_info "Cloning paru into $tmpdir"
   if ! git clone https://aur.archlinux.org/paru.git "$tmpdir"; then
     log_err "Failed to clone paru repository."
@@ -170,7 +173,7 @@ install_local_bin() {
   local repo="$1" binary="$2" post="${3:-}"
   local tmpdir
   tmpdir="$(mktemp -d)"
-  trap 'rm -rf "$tmpdir"' RETURN
+  trap 'rm -rf "$tmpdir"; trap - RETURN' RETURN
   log_info "Cloning ${repo##*/}"
   if ! git clone "$repo" "$tmpdir"; then
     log_err "Failed to clone ${repo##*/}."
@@ -238,8 +241,8 @@ write_theme_env() {
     "XCURSOR_SIZE=24"
     "QT_QPA_PLATFORMTHEME=gtk3"
     "GTK_USE_PORTAL=1"
-    "XDG_CURRENT_DESKTOP=sway"
-    "XDG_SESSION_DESKTOP=sway"
+    "XDG_CURRENT_DESKTOP=niri"
+    "XDG_SESSION_DESKTOP=niri"
     "XDG_SESSION_TYPE=wayland"
     "QT_QPA_PLATFORM=wayland"
     "SDL_VIDEODRIVER=wayland"
@@ -260,14 +263,14 @@ write_theme_env() {
     CLUTTER_BACKEND
     MOZ_ENABLE_WAYLAND
   )
-  cat > "$env_dir/10-dracula.conf" <<'EOF'
+cat > "$env_dir/10-dracula.conf" <<'EOF'
 GTK_THEME=Dracula
 XCURSOR_THEME=Bibata-Modern-Ice
 XCURSOR_SIZE=24
 QT_QPA_PLATFORMTHEME=gtk3
 GTK_USE_PORTAL=1
-XDG_CURRENT_DESKTOP=sway
-XDG_SESSION_DESKTOP=sway
+XDG_CURRENT_DESKTOP=niri
+XDG_SESSION_DESKTOP=niri
 XDG_SESSION_TYPE=wayland
 QT_QPA_PLATFORM=wayland
 SDL_VIDEODRIVER=wayland
@@ -283,27 +286,16 @@ EOF
 }
 
 # --- display manager ------------------------------------------------------
-configure_sddm() {
-  log_info "Configuring SDDM theme"
-  local theme=""
-  local candidate
-  for candidate in multicolor-sddm-theme multicolor-sddm multicolor; do
-    if [[ -d "/usr/share/sddm/themes/$candidate" ]]; then
-      theme="$candidate"
-      break
-    fi
-  done
+configure_greetd() {
+  log_info "Configuring greetd + tuigreet"
+  sudo install -d -m 755 /etc/greetd
+  sudo tee /etc/greetd/config.toml > /dev/null <<'EOF'
+[terminal]
+vt = 1
 
-  if [[ -z $theme ]]; then
-    log_warn "Multicolor SDDM theme assets not found; skipping theme selection."
-    return
-  fi
-
-  sudo install -d -m 755 /etc/sddm.conf.d
-  sudo tee /etc/sddm.conf.d/theme.conf > /dev/null <<EOF
-[Theme]
-Current=$theme
-CursorTheme=Bibata-Modern-Ice
+[default_session]
+command = "tuigreet --time --remember --user-menu --cmd 'dbus-run-session niri'"
+user = "greeter"
 EOF
 }
 
@@ -379,12 +371,11 @@ install_desktop_entries() {
 
 enable_services() {
   log_info "Enabling system services"
-  sudo systemctl enable NetworkManager
-  sudo systemctl start NetworkManager
-  sudo systemctl enable bluetooth
-  sudo systemctl start bluetooth
-  sudo systemctl enable sddm
-  log_warn "SDDM enabled; it will start after reboot."
+  sudo systemctl enable --now NetworkManager
+  sudo systemctl enable --now bluetooth
+  sudo systemctl enable --now seatd
+  sudo systemctl enable greetd
+  log_warn "greetd enabled; it will start at boot."
 
   log_info "Enabling PipeWire user services"
   if systemctl --user list-unit-files >/dev/null 2>&1; then
@@ -398,22 +389,22 @@ enable_services() {
 
 ensure_user_groups() {
   log_info "Adding user to video/audio/input groups"
-  sudo usermod -aG video,audio,input "$USER"
+  sudo usermod -aG video,audio,input,seat "$USER"
 }
 
-ensure_sway_desktop_entry() {
-  log_info "Ensuring sway.desktop exists"
-  if [[ -f /usr/share/wayland-sessions/sway.desktop ]]; then
-    log_info "Existing sway.desktop found."
+ensure_niri_desktop_entry() {
+  log_info "Ensuring niri.desktop exists"
+  if [[ -f /usr/share/wayland-sessions/niri.desktop ]]; then
+    log_info "Existing niri.desktop found."
     return
   fi
-  log_warn "sway.desktop missing; creating minimal entry."
-  sudo tee /usr/share/wayland-sessions/sway.desktop > /dev/null <<'EOF'
+  log_warn "niri.desktop missing; creating minimal entry."
+  sudo tee /usr/share/wayland-sessions/niri.desktop > /dev/null <<'EOF'
 [Desktop Entry]
-Name=Sway
-Comment=An i3-compatible Wayland compositor
-Exec=sway
-TryExec=sway
+Name=Niri
+Comment=Dynamic Wayland tiling compositor
+Exec=niri
+TryExec=niri
 Type=Application
 EOF
 }
@@ -423,7 +414,7 @@ install_bashrc() {
     log_err "Repository .bashrc missing at $REPO_BASHRC"
     exit 1
   fi
-  local backup="$TARGET_BASHRC.pre-sway-install.$(date +%Y%m%d%H%M%S)"
+  local backup="$TARGET_BASHRC.pre-niri-install.$(date +%Y%m%d%H%M%S)"
   if [[ -e $TARGET_BASHRC ]]; then
     log_warn "Backing up existing ~/.bashrc to ${backup/#$HOME/~}"
     cp -L "$TARGET_BASHRC" "$backup"
@@ -437,7 +428,7 @@ install_zshrc() {
     log_err "Repository .zshrc missing at $REPO_ZSHRC"
     exit 1
   fi
-  local backup="$TARGET_ZSHRC.pre-sway-install.$(date +%Y%m%d%H%M%S)"
+  local backup="$TARGET_ZSHRC.pre-niri-install.$(date +%Y%m%d%H%M%S)"
   if [[ -e $TARGET_ZSHRC ]]; then
     log_warn "Backing up existing ~/.zshrc to ${backup/#$HOME/~}"
     cp -L "$TARGET_ZSHRC" "$backup"
@@ -466,17 +457,17 @@ set_default_shell_zsh() {
 
 final_summary() {
   show_banner
-  log_ok "Sway installation and configuration complete!"
+  log_ok "Niri installation and configuration complete!"
   echo
   log_info "Configuration summary:"
   cat <<'EOF'
-  • SDDM display manager installed and enabled
-  • Sway WM with Waybar status bar (Dracula theme)
+  • greetd + tuigreet display manager enabled
+  • Niri compositor with Waybar (Dracula theme)
   • Kitty terminal emulator (Dracula theme)
   • Brave browser
   • NimLaunch application launcher
   • Nymph fetch utility (auto-runs in terminal)
-  • Swaylock screen locker with Dracula theme
+  • Gtklock screen locker with Dracula theme
   • Mako notification daemon (Dracula theme)
   • GTK applications themed with Dracula
   • PipeWire audio system (modern replacement for PulseAudio)
@@ -487,7 +478,7 @@ final_summary() {
   • Auto-lock after 5 minutes of inactivity
   • Consistent Dracula theme across all components
 EOF
-  log_warn "Please reboot to start SDDM. Select 'Sway' from the session menu."
+  log_warn "Please reboot to start greetd. Select 'Niri' from the session menu."
   echo
   log_info "Basic key bindings:"
   cat <<'EOF'
@@ -497,8 +488,8 @@ EOF
   • Super + N: Open Thunar file manager
   • Super + Shift + I: Show keybinding helper
   • Super + I: Lock screen
-  • Super + Shift + Q: Close window
-  • Super + Shift + E: Exit Sway
+  • Super + Q: Close window
+  • Super + Shift + E: Exit Niri session
   • Print: Screenshot
   • Super + Print: Area screenshot
 EOF
@@ -510,7 +501,7 @@ EOF
 # --- main flow ------------------------------------------------------------
 main() {
   show_banner
-  log_info "Starting Sway WM installation on minimal Arch Linux..."
+  log_info "Starting Niri installation on minimal Arch Linux..."
   require_environment
   confirm_run
 
@@ -531,10 +522,10 @@ main() {
   log_info "Creating ~/Screenshots"
   mkdir -p "$HOME/Screenshots"
 
-  configure_sddm
+  configure_greetd
   enable_services
   ensure_user_groups
-  ensure_sway_desktop_entry
+  ensure_niri_desktop_entry
 
   log_info "Refreshing font cache"
   fc-cache -fv

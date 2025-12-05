@@ -1,17 +1,5 @@
 # Display manager, Wayland stack, and desktop utilities
-sddm
-qt5-graphicaleffects
-qt5-svg
-qt5-quickcontrols2
-qt5-wayland
-qt6-svg
-qt6-5compat
-qt6-declarative
-qt6-wayland
-sway
-swaylock
-swayidle
-swaybg
+greetd
 waybar
 wl-clipboard
 xorg-xwayland
@@ -49,9 +37,14 @@ polkit-gnome
 yad
 gtk3
 qt5ct
+qt6-wayland
 lxappearance
 xdg-user-dirs
 xdg-utils
 xdg-desktop-portal-wlr
 xdg-desktop-portal-gtk
 gvfs-smb
+seatd
+gtklock
+niri
+swayidle

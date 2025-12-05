@@ -1,2 +1,3 @@
-# Graphical applications from the AUR
+# Graphical applications and helpers from the AUR
 brave-bin
+greetd-tuigreet

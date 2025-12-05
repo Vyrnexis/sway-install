@@ -1,4 +1,4 @@
-# ~/.zshrc - sway-install
+# ~/.zshrc - niri-install
 
 # Exit if non-interactive
 [[ -o interactive ]] || return
@@ -8,7 +8,7 @@ export LANG=en_AU.UTF-8
 export GDK_BACKEND=wayland
 export GTK_THEME="Dracula"
 export XDG_SESSION_TYPE=wayland
-export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-sway}"
+export XDG_CURRENT_DESKTOP="${XDG_CURRENT_DESKTOP:-niri}"
 export MANPAGER="sh -c 'awk '\''{ gsub(/\\x1B\\[[0-9;]*m/, \"\", $0); gsub(/.\\x08/, \"\", $0); print }'\'' | bat -p -lman'"
 export EDITOR="hx"
 export VISUAL="$EDITOR"

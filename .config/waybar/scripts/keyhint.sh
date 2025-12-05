@@ -6,14 +6,9 @@ entries=(
 "Super+D|Application launcher|~/.local/bin/nimlaunch"
 "Super+B|Open browser|brave"
 "Super+N|Open file manager|thunar"
-"Super+I|Lock screen|swaylock -f"
-"Super+Shift+Q|Close focused window|swaymsg kill"
-"Super+Shift+E|Exit Sway session|swaymsg exit"
-"Super+F|Toggle fullscreen|swaymsg fullscreen"
-"Super+Space|Toggle focus mode|swaymsg focus mode_toggle"
-"Super+Shift+Space|Toggle floating|swaymsg floating toggle"
-"Super+Minus|Show scratchpad|swaymsg scratchpad show"
-"Super+Shift+Minus|Move to scratchpad|swaymsg move scratchpad"
+"Super+I|Lock screen|gtklock -s"
+"Super+Q|Close focused window|niri builtin close-window"
+"Super+Shift+E|Exit Niri session|niri builtin quit"
 "Print|Screenshot (full)|grim - | swappy -f -"
 "Super+Print|Screenshot (area)|grim -g \"\$(slurp)\" - | swappy -f -"
 "Super+Shift+I|Show this help|~/.config/waybar/scripts/keyhint.sh"
@@ -35,7 +30,7 @@ make_rows() {
 rows=$(make_rows)
 formatted=$(printf '%s\n' "$rows" | column -t -s $'\t')
 formatted=$(awk 'NR==1{print "\033[1;36m" $0 "\033[0m"; next} {print}' <<<"$formatted")
-title=$'\033[1;35mSway Keybindings\033[0m'
+title=$'\033[1;35mNiri Keybindings\033[0m'
 divider=$'\033[2m──────────────────────────────────────────────\033[0m'
 formatted="$title"$'\n'$"$divider"$'\n'$formatted
 formatted+=$'\n\n\033[2mPress q to close.\033[0m'
@@ -49,7 +44,7 @@ make_rows > "$tmp_data_raw"
 tail -n +2 "$tmp_data_raw" > "$tmp_data"
 
 if command -v yad >/dev/null 2>&1; then
-    yad --title="Sway Keybindings" \
+    yad --title="Niri Keybindings" \
         --class=keyhint \
         --name=keyhint \
         --width=900 \
@@ -66,17 +61,12 @@ if command -v yad >/dev/null 2>&1; then
         --column="Key" \
         --column="Description" \
         --column="Command" < "$tmp_data" &
-    yad_pid=$!
-    (
-      sleep 0.2
-      swaymsg '[pid='"$yad_pid"'] floating enable, move position center, border pixel 2, sticky enable' >/dev/null 2>&1 || true
-    ) &
-    wait $yad_pid
+    wait $!
     exit 0
 fi
 
 if command -v kitty >/dev/null 2>&1; then
-    kitty --class keyhint --title "Sway Keybindings" less -R "$tmp_file"
+    kitty --class keyhint --title "Niri Keybindings" less -R "$tmp_file"
     exit 0
 fi
 

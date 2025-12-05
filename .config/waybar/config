@@ -13,9 +13,7 @@
         "mpd"
     ],
     "modules-center": [
-        "sway/mode",
-        "sway/scratchpad",
-        "sway/workspaces"
+        "niri/workspaces"
     ],
     "modules-right": [
         "custom/idle",
@@ -31,7 +29,7 @@
       "on-click": "swaymsg exec \"~/.local/bin/nimlaunch\""
     },
     // Modules configuration
-    "sway/workspaces": {
+    "niri/workspaces": {
         "disable-scroll": false,
         "all-outputs": true,
 		    "persistent-workspaces": {
@@ -63,16 +61,6 @@
     //         "default": "󰋔"
          }
      },
-    "sway/mode": {
-        "format": "<span style=\"normal\">{}</span>"
-    },
-    "sway/scratchpad": {
-        "format": "{icon} {count}",
-        "show-empty": false,
-        "format-icons": ["", ""],
-        "tooltip": true,
-        "tooltip-format": "{app}: {title}"
-    },
     "mpd": {
         "format": "󰝚 {title}",
         "format-disconnected": "",
