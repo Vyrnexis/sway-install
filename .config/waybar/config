@@ -26,7 +26,7 @@
     "custom/launcher": {
       "format": "",
       "tooltip": false,
-      "on-click": "swaymsg exec \"~/.local/bin/nimlaunch\""
+      "on-click": "~/.local/bin/nimlaunch"
     },
     // Modules configuration
     "niri/workspaces": {
