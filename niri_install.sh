@@ -514,8 +514,8 @@ main() {
   install_paru
   install_pkg_sets paru "${PARU_SETS[@]}"
 
-  install_local_bin "https://github.com/DrunkenAlcoholic/NimLaunch-SDL2.git" nimlaunch
-  install_local_bin "https://github.com/DrunkenAlcoholic/Nymph.git" nymph \
+  install_local_bin "https://github.com/Vyrnexis/NimLaunch.git" nimlaunch
+  install_local_bin "https://github.com/Vyrnexis/Nymph.git" nymph \
     'rm -rf "$HOME/.config/nymph/logos"; mkdir -p "$HOME/.config/nymph"; cp -r bin/logos "$HOME/.config/nymph/"'
 
   sync_configs
