@@ -339,6 +339,10 @@ EOF
     chmod +x "$HOME/.config/waybar/scripts/"* || true
   fi
 
+  if command -v mpd >/dev/null 2>&1; then
+    mkdir -p "$HOME/.local/share/mpd/playlists"
+  fi
+
   apply_theme
   write_theme_env
 }
@@ -371,6 +375,9 @@ enable_services() {
     systemctl --user enable --now pipewire.service
     systemctl --user enable --now pipewire-pulse.service
     systemctl --user enable --now wireplumber.service
+    if command -v mpd >/dev/null 2>&1; then
+      systemctl --user enable --now mpd.service || log_warn "Could not enable mpd.service for user."
+    fi
   else
     log_warn "systemd --user not available; skipping PipeWire enablement."
   fi

@@ -6,3 +6,4 @@ pipewire-jack
 wireplumber
 ncmpcpp
 mpd
+mpc

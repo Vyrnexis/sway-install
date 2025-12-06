@@ -10,8 +10,6 @@ thunar-archive-plugin
 thunar-volman
 ffmpegthumbnailer
 grim
-slurp
-swappy
 mako
 imv
 brightnessctl
@@ -32,6 +30,7 @@ gvfs-dnssd
 gvfs-mtp
 gvfs-gphoto2
 gvfs-afc
+file-roller
 libnotify
 polkit
 polkit-gnome
