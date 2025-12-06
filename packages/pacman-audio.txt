@@ -7,3 +7,4 @@ wireplumber
 ncmpcpp
 mpd
 mpc
+cmus

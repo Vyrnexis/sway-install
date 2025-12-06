@@ -340,7 +340,7 @@ EOF
   fi
 
   if command -v mpd >/dev/null 2>&1; then
-    mkdir -p "$HOME/.local/share/mpd/playlists"
+    mkdir -p "$HOME/.config/mpd" "$HOME/.local/share/mpd/playlists"
   fi
 
   apply_theme
