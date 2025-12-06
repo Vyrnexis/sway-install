@@ -140,7 +140,7 @@ binds {
     Mod+D hotkey-overlay-title="Run an Application: NimLaunch" { spawn "~/.local/bin/nimlaunch"; }
     Mod+B hotkey-overlay-title="Open Browser: Brave" { spawn "brave"; }
     Mod+N hotkey-overlay-title="Open File Manager: Thunar" { spawn "thunar"; }
-    Mod+I hotkey-overlay-title="Lock the Screen: gtklock" { spawn "gtklock -s"; }
+    Mod+I hotkey-overlay-title="Lock the Screen: gtklock" { spawn "gtklock"; }
 
     Super+Alt+S allow-when-locked=true hotkey-overlay-title=null { spawn-sh "pkill orca || exec orca"; }
 
