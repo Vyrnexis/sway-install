@@ -3,6 +3,7 @@ greetd
 waybar
 wl-clipboard
 xorg-xwayland
+xwayland-satellite
 kitty
 tumbler
 thunar
