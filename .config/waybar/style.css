@@ -58,6 +58,15 @@ tooltip {
     background: @background;
 }
 
+.focused #workspaces button.focused {
+    color: @foreground;
+    border-bottom: 1px solid @foreground;
+}
+
+.urgent #workspaces button {
+    color: @red;
+}
+
 #workspaces button:hover {
     background: @background;
     color: @gray;

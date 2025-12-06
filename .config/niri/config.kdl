@@ -125,6 +125,11 @@ window-rule {
     open-floating true
 }
 
+window-rule {
+    match app-id=r#"^nimlaunch$"#
+    focus-ring { off }
+}
+
 binds {
     Mod+Shift+Slash { show-hotkey-overlay; }
 

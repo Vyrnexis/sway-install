@@ -32,35 +32,12 @@
     "niri/workspaces": {
         "disable-scroll": false,
         "all-outputs": true,
-		    "persistent-workspaces": {
-			      "1": [],
-			      "2": [],
-			      "3": [],
-			      "4": [],
-			      "5": [],
-			      "6": [],
-			      "7": [],
-			      "8": [],
-			      "9": [],
-			      "10": []
-         },
-         "format": "{icon}",
-         "format-icons": {
-             "1": "",
-             "2": "",
-             "3": "",
-             "4": "󰝚",
-             "5": "󰉋",
-             "6": "",
-             "7": "",
-             "8": "󰐍",
-             "9": "󰈙",
-             "10": "󰋾"
-    //         "urgent": "󰋑",
-    //         "focused": "󰋑",
-    //         "default": "󰋔"
-         }
-     },
+        "format": "{index} {icon}",
+        "format-icons": {
+            "default": "󰓎" // same icon for all workspaces
+        },
+        "on-click": "niri msg action toggle-overview"
+    },
     "mpd": {
         "format": "󰝚 {title}",
         "format-disconnected": "",
@@ -87,7 +64,7 @@
       "exec": "~/.config/waybar/scripts/idle_toggle.sh status",
       "on-click": "~/.config/waybar/scripts/idle_toggle.sh toggle",
       "return-type": "json",
-      "interval": 5
+      "interval": 3
     },
     "backlight": {
         // "device": "acpi_video1",
@@ -132,11 +109,11 @@
         "on-click-middle": "~/.config/waybar/scripts/volume --toggle",
         "on-scroll-up": "~/.config/waybar/scripts/volume --up",
         "on-scroll-down": "~/.config/waybar/scripts/volume --down",
-        "on-click-right": "pavucontrol"
+        "on-click-right": "sh -c 'command -v pavucontrol >/dev/null 2>&1 && pavucontrol'"
     },
     "custom/weather": {
         "exec": "~/.config/waybar/scripts/weather.sh -o",
         "on-click": "kitty -e ~/.config/waybar/scripts/weather.sh",
-        "interval": 120
+        "interval": 600
     }
 }

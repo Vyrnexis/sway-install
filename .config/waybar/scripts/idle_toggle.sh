@@ -13,13 +13,32 @@ elif [[ -f /usr/share/gtklock/style.css ]]; then
     LOCK_CMD=(gtklock -s /usr/share/gtklock/style.css)
 fi
 
-LOCK_TIMEOUT=300
-DPMS_TIMEOUT=360
+# Timeouts (seconds). Override with LOCK_TIMEOUT_SEC / DPMS_TIMEOUT_SEC env vars.
+LOCK_TIMEOUT=${LOCK_TIMEOUT_SEC:-300}
+DPMS_TIMEOUT=${DPMS_TIMEOUT_SEC:-360}
+
+NIRI_SOCKET=${NIRI_SOCKET:-}
+if [[ -z ${NIRI_SOCKET} && -n ${XDG_RUNTIME_DIR:-} ]]; then
+    for cand in "$XDG_RUNTIME_DIR"/niri-ipc-*; do
+        [[ -S $cand ]] || continue
+        NIRI_SOCKET="$cand"
+        break
+    done
+fi
+
+POWER_OFF_CMD=(niri msg)
+POWER_ON_CMD=(niri msg)
+if [[ -n ${NIRI_SOCKET:-} ]]; then
+    POWER_OFF_CMD+=(--socket "$NIRI_SOCKET")
+    POWER_ON_CMD+=(--socket "$NIRI_SOCKET")
+fi
+POWER_OFF_CMD+=(action power-off-monitors)
+POWER_ON_CMD+=(action power-on-monitors)
 
 IDLE_CMD=(swayidle -w \
     timeout "$LOCK_TIMEOUT" "${LOCK_CMD[@]}" \
-    timeout "$DPMS_TIMEOUT" "niri msg action power-off-monitors" \
-    resume "niri msg action power-on-monitors" \
+    timeout "$DPMS_TIMEOUT" "${POWER_OFF_CMD[@]}" \
+    resume "${POWER_ON_CMD[@]}" \
     before-sleep "${LOCK_CMD[@]}")
 
 command -v swayidle >/dev/null 2>&1 || { echo "swayidle not found" >&2; exit 1; }
@@ -35,6 +54,7 @@ start_idle() {
     env WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" \
         XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
         DBUS_SESSION_BUS_ADDRESS="${DBUS_SESSION_BUS_ADDRESS:-}" \
+        NIRI_SOCKET="${NIRI_SOCKET:-}" \
         PATH="$PATH" \
         setsid -f "${IDLE_CMD[@]}" >/dev/null 2>&1
 }

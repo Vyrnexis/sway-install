@@ -15,7 +15,13 @@ Run the official Arch installer (`archinstall`) and pick these options for the s
 - Additional packages: `git` (needed only to clone this repo)
 - Bootloader/filesystems: any default combination is fine; just ensure you can boot and get online
 
-After installation finishes and you reboot, sign in as the regular sudo-capable user (not root) before running the script below. You need working internet for package installs.
+After installation finishes and you reboot, sign in as the regular sudo-capable user (not root) before running the script below. You need working internet for package installs.  
+For Wi‑Fi on a minimal install, pick the `NetworkManager` option in `archinstall` so `nmcli` is present, then connect after reboot:
+
+```bash
+nmcli device wifi list
+nmcli device wifi connect "YourSSID" password "YourPassword"
+```
 
 ## Usage
 
